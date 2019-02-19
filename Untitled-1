@@ -1,0 +1,126 @@
+Homepage
+codeburst
+Follow
+Sign inGet started
+HOMELEARN WEB DEVELOPMENTWEB DEV COURSESWRITE FOR US
+Deploying Dart 2 apps on Heroku
+Go to the profile of Jermaine Oppong
+Jermaine OppongFollow
+Jul 18, 2018
+
+Having spent the last 2 weeks working on a web app as part of exploring client-side development in Dart, I now have it deployed on Heroku and I want to show how you could do the same. I won’t be covering how I wrote the app since the focus here is on deployment. That being said, I will link to the source code at the end of this article 😉
+Prerequisites 🔥
+You’ll need these to begin
+Dart 2 SDK
+Git
+Heroku Account
+Heroku CLI
+Once they’re set up, login with your credentials by running heroku login in your terminal.
+1. Set up your web project
+Navigate to your project in the terminal. If you do not have one you could clone my repo containing my solution and skip straight to step #3.
+Alternatively, you could generate a test project using the stagehand scaffolding tool:
+$ pub global activate stagehand
+$ mkdir web_project && cd web_project
+$ stagehand web-simple
+2. Write an HTTP server
+Amend the dependencies of the generated pubspec.yaml file to this:
+dependencies:
+  shelf: any
+  shelf_static: any
+Run pub get to update your dependencies. We’re using shelf to simplify creating a web server.
+Create bin/main.dart with the logic for spawning our server:
+
+3. Run the project locally
+Install the webdev tool:
+$ pub global activate webdev
+Then run the command below to generate our bundle:
+$ webdev build # or `pub global run webdev build`
+This will produce a build folder:
+
+Run dart bin/main.dart and visit http://localhost:9999:
+
+4. Create your Heroku app
+Run the following command to create a new app:
+$ heroku create
+Creating secure-spire-84236... done, stack is cedar-14
+http://secure-spire-84236.herokuapp.com/ ...
+Git remote heroku added
+This will generate a random name for your app, so secure-spire-84236 in this case.
+Lastly, commit your project and add heroku remote:
+$ git init
+$ git add .
+$ git commit -m "Initial commit."
+$ heroku git:remote -a secure-spire-84236
+5. Configure the buildpack
+Running the deploy command(git push heroku master) will throw an exception since Heroku requires the correct buildpack for running Dart apps.
+A buildpack contains scripts that set the necessary dependencies to build and serve your project. Heroku does not officially support Dart at present time.
+However the platform allows us to specify custom buildpacks, and although the Dart team has one, I made a tweak to get it working with Dart 2, so we’ll use my buildpack:
+$ heroku buildpacks:set https://github.com/graphicbeacon/heroku-buildpack-dart.git
+And set the required configurations needed by the buildpack:
+$ heroku config:set DART_SDK_URL=https://storage.googleapis.com/dart-archive/channels/dev/release/2.0.0-dev.67.0/sdk/dartsdk-linux-x64-release.zip # From the dart install page
+$ heroku config:set DART_BUILD_CMD="/app/dart-sdk/bin/pub global activate webdev && /app/dart-sdk/bin/pub global run webdev build"
+This tells the buildpack to pull the latest Dart SDK and build the project using the webdev tool.
+6. Deploy all the things! 🚀
+Create a Procfile at our project root with the instructions to start our server:
+web: ./dart-sdk/bin/dart bin/main.dart
+Commit that change and now deploy:
+$ git push heroku master
+You should see a confirmation message with the web url:
+
+And visit in the browser:
+
+Conclusion
+I hope you enjoyed this tutorial. Jot down some comments and let me know how you felt on this one.
+Here’s the game I deployed and the source code.
+Like, share and follow me 😍 for more content on Dart.
+Quick links
+Dart 2 SDK
+How Heroku works
+Get Started | Webdev Dart
+Free Dart screencasts on Egghead.io
+
+✉️ Subscribe to CodeBurst’s once-weekly Email Blast, 🐦 Follow CodeBurst on Twitter, view 🗺️ The 2018 Web Developer Roadmap, and 🕸️ Learn Full Stack Web Development.
+HerokuDartlangDeploymentGame DevelopmentWeb Development
+
+61 claps
+2
+Follow
+Go to the profile of Jermaine Oppong
+Jermaine Oppong
+Christian | Web Developer | Egghead.io instructor | www.creativebracket.com | @creativ_bracket
+Follow
+codeburst
+codeburst
+Bursts of code to power through your day. Web Development articles, tutorials, and news.
+More from codeburst
+Large Offline Datasets with Apollo Client
+Go to the profile of John Tucker
+John Tucker
+Jan 26
+
+473
+
+More from codeburst
+Progressive Web Applications: A Progressive State of the Web
+Go to the profile of Tarique Ejaz
+Tarique Ejaz
+Jan 22
+
+486
+
+More from codeburst
+How to use HTML5 form validations with React
+Go to the profile of Sonny Recio
+Sonny Recio
+Jan 15
+
+258
+
+Responses
+Write a response…
+Show all responses
+
+61
+
+codeburst
+Never miss a story from codeburst, when you sign up for Medium. Learn more
