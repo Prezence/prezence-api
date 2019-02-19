@@ -25,7 +25,8 @@ abstract class APIServer {
 
 		// var securityContext = SecurityContext()
 		int _port = int.parse(dotenv.env['PORT']);
-    	HttpServer server = await io.serve(_handler, '127.0.0.1', _port);
+		print('port: ' + _port.toString());
+    	HttpServer server = await io.serve(_handler, '0.0.0.0', _port);
     	print('Serving at http://${server.address.host}:${server.port}');
 	}
 
@@ -52,7 +53,6 @@ abstract class APIServer {
 		catch(ex) {
 			print(ex);
 		}
-	
 	}
 }
 
