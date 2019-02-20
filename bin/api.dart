@@ -10,7 +10,7 @@ abstract class API {
 
 	static Future<List<dynamic>> getLibraryIndex() async {
 
-		var result = await DB.query('select * from library_items');
+		var result = await DB.query('select * from library_items where is_active = true');
 	
 		return result;
 	}
